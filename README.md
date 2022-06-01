@@ -1,0 +1,2 @@
+# meilidash
+MeiliSearch Admin Dashboard
