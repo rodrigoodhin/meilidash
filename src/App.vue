@@ -82,7 +82,7 @@ nav a:first-of-type {
   border: 0;
 }
 
-nav svg {
+nav svg{
   width: 20px;
 }
 @media (min-width: 1024px) {
@@ -98,5 +98,9 @@ nav svg {
     padding: 1rem 0;
     margin-top: 1rem;
   }
+}
+
+form svg {
+  width: 30px;
 }
 </style>
