@@ -1,0 +1,1 @@
+import{_ as e,o as _,c as a,a as c}from"./index.608edeff.js";const s={},t={class:"search"},r=c("h1",null,"Search Page",-1),o=[r];function n(i,d){return _(),a("div",t,o)}var l=e(s,[["render",n]]);export{l as default};
