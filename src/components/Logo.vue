@@ -60,3 +60,8 @@
     </defs>
   </svg>
 </template>
+<script lang="ts">
+export default {
+  name: "LogoComponent",
+};
+</script>

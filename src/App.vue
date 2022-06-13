@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import Logo from "./components/Logo.vue";
-import IndexSelection from "./components/IndexSelection.vue";
 import IconSearchDocument from "./components/icons/IconSearchDocument.vue";
+import IconSettings from "./components/icons/IconSettings.vue";
+import Config from "./components/config/Index.vue";
 </script>
 
 <template>
-  <n-layout>
-    <n-layout-header>
-      <Logo />
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/search"><IconSearchDocument /> Search</RouterLink>
-        <RouterLink to="/settings">Settings</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-      <IndexSelection />
-    </n-layout-header>
-    <RouterView />
-    <n-layout-footer>Copyright BLABLA</n-layout-footer>
-  </n-layout>
+  <n-message-provider>
+    <n-layout>
+      <n-layout-header>
+        <Logo />
+        <nav>
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/search"><IconSearchDocument /> Search</RouterLink>
+          <RouterLink to="/settings"><IconSettings /> Settings</RouterLink>
+          <RouterLink to="/about">About</RouterLink>
+        </nav>
+        <Config />
+      </n-layout-header>
+      <RouterView :key="$route.fullPath" />
+      <n-layout-footer>Copyright BLABLA</n-layout-footer>
+    </n-layout>
+  </n-message-provider>
 </template>
 
 <style>

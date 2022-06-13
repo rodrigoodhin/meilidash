@@ -22,46 +22,70 @@ const router = createRouter({
         {
           path: "displayed",
           name: "displayed",
-          component: () =>
-            import("@/components/settings/DisplayedAttributes.vue"),
+          props: {
+            attribute: "displayed-attributes",
+            label: "Displayed Attribute",
+          },
+          component: () => import("@/components/settings/FormAttributes.vue"),
         },
         {
           path: "searchable",
           name: "searchable",
-          component: () =>
-            import("@/components/settings/SearchableAttributes.vue"),
+          props: {
+            attribute: "searchable-attributes",
+            label: "Searchable Attribute",
+          },
+          component: () => import("@/components/settings/FormAttributes.vue"),
         },
         {
           path: "filterable",
           name: "filterable",
-          component: () =>
-            import("@/components/settings/FilterableAttributes.vue"),
+          props: {
+            attribute: "filterable-attributes",
+            label: "Filterable Attribute",
+          },
+          component: () => import("@/components/settings/FormAttributes.vue"),
         },
         {
           path: "sortable",
           name: "sortable",
-          component: () =>
-            import("@/components/settings/SortableAttributes.vue"),
+          props: {
+            attribute: "sortable-attributes",
+            label: "Sortable Attribute",
+          },
+          component: () => import("@/components/settings/FormAttributes.vue"),
         },
         {
           path: "rankingRules",
           name: "rankingRules",
-          component: () => import("@/components/settings/RankingRules.vue"),
+          props: { attribute: "ranking-rules", label: "Ranking Rules" },
+          component: () => import("@/components/settings/FormAttributes.vue"),
         },
         {
           path: "synonyms",
           name: "synonyms",
-          component: () => import("@/components/settings/Synonyms.vue"),
+          props: { attribute: "synonyms", label: "Synonyms" },
+          component: () => import("@/components/settings/FormAttributes.vue"),
         },
         {
           path: "distinct",
           name: "distinct",
-          component: () =>
-            import("@/components/settings/DistinctAttribute.vue"),
+          props: {
+            attribute: "distinct-attribute",
+            label: "Distinct Attribute",
+          },
+          component: () => import("@/components/settings/FormAttributes.vue"),
+        },
+        {
+          path: "stopWords",
+          name: "stopWords",
+          props: { attribute: "stop-words", label: "Stop Words" },
+          component: () => import("@/components/settings/FormAttributes.vue"),
         },
         {
           path: "typoTolerance",
           name: "typoTolerance",
+          props: { attribute: "typo-tolerance", label: "Typo Tolerance" },
           component: () => import("@/components/settings/TypoTolerance.vue"),
         },
         // ...other sub routes
@@ -76,4 +100,3 @@ const router = createRouter({
 });
 
 export default router;
-() => import("@/components/settings/DisplayedAttributes.vue");

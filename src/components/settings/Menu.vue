@@ -5,7 +5,6 @@
 <script lang="ts">
 import { defineComponent, h } from "vue";
 import { RouterLink } from "vue-router";
-import { useMessage } from "naive-ui";
 import type { MenuOption } from "naive-ui";
 
 const menuOptions: MenuOption[] = [
@@ -16,9 +15,6 @@ const menuOptions: MenuOption[] = [
         {
           to: {
             name: "displayed",
-            params: {
-              lang: "en-US",
-            },
           },
         },
         { default: () => "Displayed Attributes" }
@@ -34,6 +30,7 @@ const menuOptions: MenuOption[] = [
             name: "searchable",
             params: {
               lang: "en-US",
+              attribute: "searchable-attributes",
             },
           },
         },
@@ -50,6 +47,7 @@ const menuOptions: MenuOption[] = [
             name: "filterable",
             params: {
               lang: "en-US",
+              attribute: "filterable-attributes",
             },
           },
         },
@@ -66,6 +64,7 @@ const menuOptions: MenuOption[] = [
             name: "sortable",
             params: {
               lang: "en-US",
+              attribute: "sortable-attributes",
             },
           },
         },
@@ -82,6 +81,7 @@ const menuOptions: MenuOption[] = [
             name: "rankingRules",
             params: {
               lang: "en-US",
+              attribute: "ranking-rules",
             },
           },
         },
@@ -98,6 +98,7 @@ const menuOptions: MenuOption[] = [
             name: "synonyms",
             params: {
               lang: "en-US",
+              attribute: "synonyms",
             },
           },
         },
@@ -114,6 +115,7 @@ const menuOptions: MenuOption[] = [
             name: "distinct",
             params: {
               lang: "en-US",
+              attribute: "distinct-attribute",
             },
           },
         },
@@ -127,10 +129,20 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: {
+            name: "stopWords",
+          },
+        },
+        { default: () => "Stop Words" }
+      ),
+    key: "stopWords",
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: {
             name: "typoTolerance",
-            params: {
-              lang: "en-US",
-            },
           },
         },
         { default: () => "Typo Tolerance" }
@@ -140,6 +152,7 @@ const menuOptions: MenuOption[] = [
 ];
 
 export default defineComponent({
+  name: "MenuComponent",
   setup() {
     return {
       menuOptions,
