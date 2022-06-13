@@ -18,7 +18,6 @@
       :label-width="80"
       :model="indexModel"
       :rules="rules"
-      :size="size"
     >
       <n-form-item label="UID" path="uid">
         <n-input v-model:value="indexModel.uid" placeholder="Input UID" />
@@ -32,7 +31,7 @@
     </n-form>
 
     <template #footer>
-      <n-button @click="saveIndex()">Save</n-button>
+      <n-button @click="saveIndex">Save</n-button>
     </template>
   </n-modal>
 </template>
@@ -43,73 +42,94 @@ import type { FormInst } from "naive-ui";
 import { useMessage } from "naive-ui";
 import IconPlus from "../icons/IconPlus.vue";
 import { callApi } from "@/api/api";
-import { useIndexStore } from "@/stores/indexes";
+
+const indexModel = ref({
+  uid: "",
+  primaryKey: "",
+});
+
+const showModalRef = ref(false);
+//const formRef = ref<FormInst | null>(null);
+
+const modalStyle = {
+  width: "600px",
+};
+
+const segmented = {
+  content: "soft",
+  footer: "soft",
+};
+
+const rules = {
+  uid: {
+    required: true,
+    message: "Please input UID",
+    trigger: ["input", "blur"],
+  },
+  primaryKey: {
+    required: true,
+    message: "Please input Primary Key",
+    trigger: ["input", "blur"],
+  },
+};
+
+let saveNewIndex: { (): void; (): Promise<any> };
 
 export default defineComponent({
+  name: "CreateIndex",
+  emits: {
+    "refresh-indexes": null,
+  },
   components: {
     IconPlus,
   },
   setup() {
-    const formRef = ref<FormInst | null>(null);
     const message = useMessage();
-    const store = useIndexStore();
-    const showModalRef = ref(false);
 
-    const indexModel = ref({
-      uid: "",
-      primaryKey: "",
-    });
+    saveNewIndex = async () => {
+      let resData;
 
-    const saveIndex = async () => {
-      console.log(indexModel.value);
-      const resData = await callApi(
-        "indexes/",
-        "POST",
-        JSON.stringify(indexModel.value, null, 2),
-        false
-      );
-      showModalRef.value = false;
-      store.getIndex;
-      message.warning("Index successfully created");
+      if (indexModel.value.uid !== "" && indexModel.value.primaryKey !== "") {
+        resData = await callApi(
+          "indexes/",
+          "POST",
+          JSON.stringify(indexModel.value, null, 2),
+          false
+        );
+
+        if (resData.isSuccess === false) {
+          message.error("Error creating index");
+          
+        } else {
+          showModalRef.value = false;
+          indexModel.value.uid = "";
+          indexModel.value.primaryKey = "";
+          message.success("Index successfully created");
+        }
+      }
+
       return resData;
     };
 
     return {
-      saveIndex: saveIndex,
-      bodyStyle: {
-        width: "600px",
-      },
-      segmented: {
-        content: "soft",
-        footer: "soft",
-      } as const,
-      size: "medium",
-      rules: {
-        uid: {
-          required: true,
-          message: "Please input UID",
-          trigger: ["input", "blur"],
-        },
-        primaryKey: {
-          required: true,
-          message: "Please input Primary Key",
-          trigger: ["input", "blur"],
-        },
-      },
-      handleValidateClick(e: MouseEvent) {
-        e.preventDefault();
-        formRef.value?.validate((errors) => {
-          if (!errors) {
-            message.success("Valid");
-          } else {
-            console.log(errors);
-            message.error("Invalid");
-          }
-        });
-      },
+      bodyStyle: modalStyle,
+      segmented: segmented,
       indexModel: indexModel,
       showModal: showModalRef,
+      rules: rules,
     };
+  },
+  methods: {
+    saveIndex() {
+      saveNewIndex();
+      this.$emit("refresh-indexes");
+    },
   },
 });
 </script>
+
+<style scoped>
+form svg {
+  width: 20px;
+}
+</style>

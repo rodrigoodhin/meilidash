@@ -18,7 +18,6 @@
         </n-form-item>
         <n-form-item path="index" label="Selected Index">
           <Indexes />
-          <CreateIndex />
         </n-form-item>
       </n-form>
     </n-drawer-content>
@@ -30,14 +29,12 @@ import type { DrawerPlacement } from "naive-ui";
 import { useMessage } from "naive-ui";
 import { useServerStore } from "@/stores/server";
 import type { ServerType } from "@/stores/server";
-import Indexes from "./Indexes.vue";
-import CreateIndex from "./CreateIndex.vue";
+import Indexes from "@/components/config/Indexes.vue";
 
 export default defineComponent({
   name: "ServerComponent",
   components: {
     Indexes,
-    CreateIndex,
   },
   setup() {
     const server = useServerStore();

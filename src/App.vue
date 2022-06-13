@@ -99,8 +99,4 @@ nav svg{
     margin-top: 1rem;
   }
 }
-
-form svg {
-  width: 30px;
-}
 </style>
