@@ -16,6 +16,7 @@
 </template>
 
 <script lang="ts">
+import type { Synonyms, TypoTolerance } from 'meilisearch';
 import { defineComponent, ref, onMounted, useAttrs } from "vue";
 import { callApi } from "@/api/api";
 
@@ -29,22 +30,101 @@ export default defineComponent({
     const loadingRef = ref(false);
 
     const attributeData = async () => {
-      const resData = await callApi(
-        "/settings/" + attrs.attribute,
-        "GET",
-        "",
-        true
-      );
-      return resData;
+      const { client, index } = await callApi();
+      let resData = [] as any[];
+
+      switch (attrs.attribute) {
+        case "displayed": {
+          resData = await index.getDisplayedAttributes();
+          break;
+        }
+        case "searchable-attributes": {
+          resData = await index.getSearchableAttributes();
+          break;
+        }
+        case "filterable-attributes": {
+          resData = await index.getFilterableAttributes();
+          break;
+        }
+        case "sortable-attributes": {
+          resData = await index.getSortableAttributes();
+          break;
+        }
+        case "ranking-rules": {
+          resData = await index.getRankingRules();
+          break;
+        }
+        case "synonyms": {
+          let res = await index.getSynonyms();
+          resData = Object.values(res)
+          break;
+        }
+        case "distinct-attribute": {
+          let res = await index.getDistinctAttribute();
+          if (res !== null) {
+            resData.push(res);
+          }
+          break;
+        }
+        case "stopWords": {
+          resData = await index.getStopWords();
+          break;
+        }
+        case "typoTolerance": {
+          resData = await index.getTypoTolerance();
+          break;
+        }
+      }
+
+      return JSON.stringify(resData);
     };
 
     const saveData = async () => {
-      const resData = await callApi(
-        "/settings/" + attrs.attribute,
-        "POST",
-        JSON.stringify(optionsRef.value, null, 2),
-        true
-      );
+      const { client, index } = await callApi();
+      let resData = null;
+
+      switch (attrs.attribute) {
+        case "displayed": {
+          resData = await index.updateDisplayedAttributes(optionsRef.value);
+          break;
+        }
+        case "searchable-attributes": {
+          resData = await index.updateSearchableAttributes(optionsRef.value);
+          break;
+        }
+        case "filterable-attributes": {
+          resData = await index.updateFilterableAttributes(optionsRef.value);
+          break;
+        }
+        case "sortable-attributes": {
+          resData = await index.updateSortableAttributes(optionsRef.value);
+          break;
+        }
+        case "ranking-rules": {
+          resData = await index.updateRankingRules(optionsRef.value);
+          break;
+        }
+        case "synonyms": {
+          let val:Synonyms = {};
+          val = optionsRef.value[0];
+          resData = await index.updateSynonyms(val);
+          break;
+        }
+        case "distinct-attribute": {
+          resData = await index.updateDistinctAttribute(optionsRef.value[0]);
+          break;
+        }
+        case "stopWords": {
+          resData = await index.updateStopWords(optionsRef.value);
+          break;
+        }
+        case "typoTolerance": {
+          let val:TypoTolerance = {};
+          val = optionsRef.value[0];
+          resData = await index.updateTypoTolerance(val);
+          break;
+        }
+      }
       return resData;
     };
 
@@ -54,8 +134,9 @@ export default defineComponent({
 
     onMounted(async () => {
       loadingRef.value = true;
-      optionsRef.value = await attributeData();
-      optionsDefault.value = await attributeData();
+      const data = await attributeData();
+      optionsRef.value = JSON.parse(data);
+      optionsDefault.value = JSON.parse(data);
       loadingRef.value = false;
     });
 

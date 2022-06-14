@@ -34,12 +34,13 @@ export default defineComponent({
 
     // Retrive Indexes from defined server
     const getIndexes = async () => {
-      const resData = await callApi("indexes", "GET", "", false);
+      const { client } = await callApi();
+      const resData = await client.getIndexes();
       let output: SelectOption[] = [];
-      resData.forEach((item: { uid: string; name: string }) => {
+      resData.forEach( (index) => {
         output.push({
-          value: item.uid,
-          label: item.name,
+          value: index.uid,
+          label: index.uid,
         });
       });
       return output;
