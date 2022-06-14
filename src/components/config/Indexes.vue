@@ -9,6 +9,7 @@
     @update:value="handleUpdateValue"
     remote
   />
+  <CreateIndex @refresh-indexes="refreshIndexes" />
 </template>
 
 <script lang="ts">
@@ -16,13 +17,32 @@ import { defineComponent, onMounted, ref } from "vue";
 import { callApi } from "@/api/api";
 import type { SelectOption } from "naive-ui";
 import { useIndexStore } from "@/stores/indexes";
+import CreateIndex from "@/components/config/CreateIndex.vue";
+
+const loadingRef = ref(false);
+const selected = ref();
+const optionsRef = ref<SelectOption[]>([]);
+
+// Retrive Indexes from defined server
+const getIndexes = async () => {
+  const resData = await callApi("indexes", "GET", "", false);
+  let output: SelectOption[] = [];
+  resData.forEach((item: { uid: string; name: string }) => {
+    output.push({
+      value: item.uid,
+      label: item.name,
+    });
+  });
+  return output;
+};
 
 export default defineComponent({
+  emits: ["refresh-indexes"],
   name: "ConfigIndexes",
+  components: {
+    CreateIndex,
+  },
   setup() {
-    const loadingRef = ref(false);
-    const selected = ref();
-    const optionsRef = ref<SelectOption[]>([]);
     const store = useIndexStore();
 
     onMounted(async () => {
@@ -31,19 +51,6 @@ export default defineComponent({
       optionsRef.value = await getIndexes();
       loadingRef.value = false;
     });
-
-    // Retrive Indexes from defined server
-    const getIndexes = async () => {
-      const resData = await callApi("indexes", "GET", "", false);
-      let output: SelectOption[] = [];
-      resData.forEach((item: { uid: string; name: string }) => {
-        output.push({
-          value: item.uid,
-          label: item.name,
-        });
-      });
-      return output;
-    };
 
     return {
       handleUpdateValue(value: string) {
@@ -54,6 +61,13 @@ export default defineComponent({
       selectedValues: selected,
       optionsRef,
     };
+  },
+  methods: {
+    async refreshIndexes() {
+      loadingRef.value = true;
+      optionsRef.value = await getIndexes();
+      loadingRef.value = false;
+    },
   },
 });
 </script>
