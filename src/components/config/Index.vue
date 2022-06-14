@@ -16,10 +16,10 @@
         <n-form-item>
           <n-button @click="save()">Save and Test</n-button>
         </n-form-item>
+        <n-form-item path="index" label="Selected Index">
+          <Indexes />
+        </n-form-item>
       </n-form>
-      <n-form-item path="index" label="Selected Index">
-        <Indexes />
-      </n-form-item>
     </n-drawer-content>
   </n-drawer>
 </template>
@@ -29,7 +29,7 @@ import type { DrawerPlacement } from "naive-ui";
 import { useMessage } from "naive-ui";
 import { useServerStore } from "@/stores/server";
 import type { ServerType } from "@/stores/server";
-import Indexes from "./Indexes.vue";
+import Indexes from "@/components/config/Indexes.vue";
 
 export default defineComponent({
   name: "ServerComponent",
