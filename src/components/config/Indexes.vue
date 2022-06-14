@@ -8,7 +8,6 @@
     placeholder="Index"
     @update:value="handleUpdateValue"
     remote
-    :key="indexesKey"
   />
   <CreateIndex @refresh-indexes="refreshIndexes" />
 </template>
@@ -63,17 +62,11 @@ export default defineComponent({
       optionsRef,
     };
   },
-  data() {
-    return {
-      indexesKey: 0,
-    };
-  },
   methods: {
     async refreshIndexes() {
       loadingRef.value = true;
       optionsRef.value = await getIndexes();
       loadingRef.value = false;
-      this.indexesKey++;
     },
   },
 });

@@ -38,7 +38,6 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import type { FormInst } from "naive-ui";
 import { useMessage } from "naive-ui";
 import IconPlus from "../icons/IconPlus.vue";
 import { callApi } from "@/api/api";
@@ -73,6 +72,24 @@ const rules = {
   },
 };
 
+const checkSaveIndex = async (indexUID: string) => {
+  const resCheckData = await callApi(
+    "indexes/" + indexUID + "/tasks",
+    "GET",
+    "",
+    false
+  );
+  if (resCheckData.isSuccess !== false) {
+    console.log(resCheckData);
+    resCheckData.forEach((indx: { status: string; type: string }) => {
+      if (indx.type === "indexCreation" && indx.status === "succeeded") {
+        return true;
+      }
+    });
+  }
+  checkSaveIndex(indexUID);
+};
+
 let saveNewIndex: { (): void; (): Promise<any> };
 
 export default defineComponent({
@@ -99,9 +116,11 @@ export default defineComponent({
 
         if (resData.isSuccess === false) {
           message.error("Error creating index");
-          
         } else {
           showModalRef.value = false;
+
+          checkSaveIndex(indexModel.value.uid);
+
           indexModel.value.uid = "";
           indexModel.value.primaryKey = "";
           message.success("Index successfully created");
@@ -122,6 +141,9 @@ export default defineComponent({
   methods: {
     saveIndex() {
       saveNewIndex();
+      //setTimeout(() => {
+      //  this.$emit("refresh-indexes");
+      //}, 500);
       this.$emit("refresh-indexes");
     },
   },
