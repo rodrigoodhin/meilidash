@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import type { Synonyms, TypoTolerance } from 'meilisearch';
+import type { Synonyms, TypoTolerance } from "meilisearch";
 import { defineComponent, ref, onMounted, useAttrs } from "vue";
 import { callApi } from "@/api/api";
 
@@ -30,11 +30,11 @@ export default defineComponent({
     const loadingRef = ref(false);
 
     const attributeData = async () => {
-      const { client, index } = await callApi();
-      let resData = [] as any[];
+      const { index } = await callApi();
+      let resData = [] as string[];
 
       switch (attrs.attribute) {
-        case "displayed": {
+        case "displayed-attributes": {
           resData = await index.getDisplayedAttributes();
           break;
         }
@@ -52,11 +52,12 @@ export default defineComponent({
         }
         case "ranking-rules": {
           resData = await index.getRankingRules();
+          console.log(resData);
           break;
         }
         case "synonyms": {
           let res = await index.getSynonyms();
-          resData = Object.values(res)
+          resData = Object.values(res);
           break;
         }
         case "distinct-attribute": {
@@ -66,7 +67,7 @@ export default defineComponent({
           }
           break;
         }
-        case "stopWords": {
+        case "stop-words": {
           resData = await index.getStopWords();
           break;
         }
@@ -80,11 +81,11 @@ export default defineComponent({
     };
 
     const saveData = async () => {
-      const { client, index } = await callApi();
+      const { index } = await callApi();
       let resData = null;
 
       switch (attrs.attribute) {
-        case "displayed": {
+        case "displayed-attributes": {
           resData = await index.updateDisplayedAttributes(optionsRef.value);
           break;
         }
@@ -105,7 +106,7 @@ export default defineComponent({
           break;
         }
         case "synonyms": {
-          let val:Synonyms = {};
+          let val: Synonyms = {};
           val = optionsRef.value[0];
           resData = await index.updateSynonyms(val);
           break;
@@ -114,12 +115,12 @@ export default defineComponent({
           resData = await index.updateDistinctAttribute(optionsRef.value[0]);
           break;
         }
-        case "stopWords": {
+        case "stop-words": {
           resData = await index.updateStopWords(optionsRef.value);
           break;
         }
         case "typoTolerance": {
-          let val:TypoTolerance = {};
+          let val: TypoTolerance = {};
           val = optionsRef.value[0];
           resData = await index.updateTypoTolerance(val);
           break;

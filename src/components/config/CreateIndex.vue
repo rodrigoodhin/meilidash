@@ -10,7 +10,6 @@
     title="Create a new index"
     :bordered="false"
     size="huge"
-    :segmented="segmented"
   >
     <n-form
       ref="formRef"
@@ -37,10 +36,12 @@
 </template>
 
 <script lang="ts">
+import type { EnqueuedTask } from "meilisearch";
 import { defineComponent, ref } from "vue";
 import { useMessage } from "naive-ui";
 import IconPlus from "../icons/IconPlus.vue";
 import { callApi } from "@/api/api";
+import { checkEndedTask } from "@/helpers/tasks";
 
 const indexModel = ref({
   uid: "",
@@ -72,25 +73,7 @@ const rules = {
   },
 };
 
-const checkSaveIndex = async (indexUID: string) => {
-  const resCheckData = await callApi(
-    "indexes/" + indexUID + "/tasks",
-    "GET",
-    "",
-    false
-  );
-  if (resCheckData.isSuccess !== false) {
-    console.log(resCheckData);
-    resCheckData.forEach((indx: { status: string; type: string }) => {
-      if (indx.type === "indexCreation" && indx.status === "succeeded") {
-        return true;
-      }
-    });
-  }
-  checkSaveIndex(indexUID);
-};
-
-let saveNewIndex: { (): void; (): Promise<any> };
+let saveNewIndex: { (): Promise<EnqueuedTask | undefined> };
 
 export default defineComponent({
   name: "CreateIndex",
@@ -104,26 +87,23 @@ export default defineComponent({
     const message = useMessage();
 
     saveNewIndex = async () => {
+      const { client } = await callApi();
       let resData;
 
       if (indexModel.value.uid !== "" && indexModel.value.primaryKey !== "") {
-        resData = await callApi(
-          "indexes/",
-          "POST",
-          JSON.stringify(indexModel.value, null, 2),
-          false
-        );
+        resData = await client.createIndex(indexModel.value.uid, {
+          primaryKey: indexModel.value.primaryKey,
+        });
+        message.success("Index queued");
 
-        if (resData.isSuccess === false) {
-          message.error("Error creating index");
-        } else {
+        const task = await checkEndedTask(resData.uid);
+        if (task.status === "succeeded") {
           showModalRef.value = false;
-
-          checkSaveIndex(indexModel.value.uid);
-
           indexModel.value.uid = "";
           indexModel.value.primaryKey = "";
-          message.success("Index successfully created");
+          message.success("Index indexed");
+        } else {
+          message.error("Error creating index");
         }
       }
 
@@ -139,11 +119,8 @@ export default defineComponent({
     };
   },
   methods: {
-    saveIndex() {
-      saveNewIndex();
-      //setTimeout(() => {
-      //  this.$emit("refresh-indexes");
-      //}, 500);
+    async saveIndex() {
+      await saveNewIndex();
       this.$emit("refresh-indexes");
     },
   },

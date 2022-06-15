@@ -25,12 +25,13 @@ const optionsRef = ref<SelectOption[]>([]);
 
 // Retrive Indexes from defined server
 const getIndexes = async () => {
-  const resData = await callApi("indexes", "GET", "", false);
+  const { client } = await callApi();
+  const resData = await client.getIndexes();
   let output: SelectOption[] = [];
-  resData.forEach((item: { uid: string; name: string }) => {
+  resData.forEach((index) => {
     output.push({
-      value: item.uid,
-      label: item.name,
+      value: index.uid,
+      label: index.uid,
     });
   });
   return output;
@@ -51,20 +52,6 @@ export default defineComponent({
       optionsRef.value = await getIndexes();
       loadingRef.value = false;
     });
-
-    // Retrive Indexes from defined server
-    const getIndexes = async () => {
-      const { client } = await callApi();
-      const resData = await client.getIndexes();
-      let output: SelectOption[] = [];
-      resData.forEach( (index) => {
-        output.push({
-          value: index.uid,
-          label: index.uid,
-        });
-      });
-      return output;
-    };
 
     return {
       handleUpdateValue(value: string) {

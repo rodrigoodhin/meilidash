@@ -82,7 +82,7 @@ nav a:first-of-type {
   border: 0;
 }
 
-nav svg{
+nav svg {
   width: 20px;
 }
 @media (min-width: 1024px) {
