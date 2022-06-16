@@ -65,7 +65,7 @@ const router = createRouter({
           path: "synonyms",
           name: "synonyms",
           props: { attribute: "synonyms", label: "Synonyms" },
-          component: () => import("@/components/settings/FormAttributes.vue"),
+          component: () => import("@/components/settings/Synonyms.vue"),
         },
         {
           path: "distinct",

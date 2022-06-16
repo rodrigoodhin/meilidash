@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import type { Synonyms, TypoTolerance } from "meilisearch";
+import type { TypoTolerance } from "meilisearch";
 import { defineComponent, ref, onMounted, useAttrs } from "vue";
 import { callApi } from "@/api/api";
 
@@ -53,11 +53,6 @@ export default defineComponent({
         case "ranking-rules": {
           resData = await index.getRankingRules();
           console.log(resData);
-          break;
-        }
-        case "synonyms": {
-          let res = await index.getSynonyms();
-          resData = Object.values(res);
           break;
         }
         case "distinct-attribute": {
@@ -103,12 +98,6 @@ export default defineComponent({
         }
         case "ranking-rules": {
           resData = await index.updateRankingRules(optionsRef.value);
-          break;
-        }
-        case "synonyms": {
-          let val: Synonyms = {};
-          val = optionsRef.value[0];
-          resData = await index.updateSynonyms(val);
           break;
         }
         case "distinct-attribute": {
